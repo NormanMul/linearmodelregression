@@ -4,11 +4,12 @@ import joblib
 import numpy as np
 
 @st.cache(allow_output_mutation=True)
-def load_model():
-    data = joblib.load('model.joblib')
-    return data['model'], data['scaler']
+def load_resources():
+    model = joblib.load('model.joblib')
+    scaler = joblib.load('scaler.joblib')
+    return model, scaler
 
-model, scaler = load_model()
+model, scaler = load_resources()
 
 st.title('Trust Score Prediction App')
 st.sidebar.title("Input Parameters")
