@@ -42,7 +42,7 @@ def train_model(X, y):
 
 def save_model(model, scaler, file_path):
     print("Saving model and scaler...")
-    joblib.dump((model, scaler), file_path)
+    joblib.dump({'model': model, 'scaler': scaler}, file_path)
     print("Model and scaler saved successfully.")
 
 if __name__ == "__main__":
