@@ -1,41 +1,26 @@
 import streamlit as st
 import pandas as pd
 import joblib
-from sklearn.linear_model import LinearRegression
-from sklearn.preprocessing import LabelEncoder, MinMaxScaler
 import numpy as np
 
-# Load the model and scaler
-@st.cache_resource
+@st.cache(allow_output_mutation=True)
 def load_model():
     data = joblib.load('model.joblib')
     return data['model'], data['scaler']
 
 model, scaler = load_model()
 
-# Streamlit app
 st.title('Trust Score Prediction App')
+st.sidebar.title("Input Parameters")
 
-# Sidebar
-st.sidebar.title("Made by Naufal Prawironegoro")
+age = st.sidebar.number_input('Age [A]', min_value=0.0, format="%.4f")
+tcpa_match = st.sidebar.number_input('% TCPA Match [B]', min_value=0.0, format="%.4f")
+ad_copy_match = st.sidebar.number_input('% Ad Copy Match [C]', min_value=0.0, format="%.4f")
+distance_factor = st.sidebar.number_input('Distance Factor [D]', min_value=0.0, format="%.4f")
+rate_of_lead_ingestion = st.sidebar.number_input('Rate of Lead Ingestion [E]', min_value=0.0, format="%.4f")
 
-st.header("Input the Parameters")
-
-# Input fields for each parameter
-age = st.number_input('Age [A]', min_value=0.0, format="%.4f")
-tcpa_match = st.number_input('% TCPA Match [B]', min_value=0.0, format="%.4f")
-ad_copy_match = st.number_input('% Ad Copy Match [C]', min_value=0.0, format="%.4f")
-distance_factor = st.number_input('Distance Factor [D]', min_value=0.0, format="%.4f")
-rate_of_lead_ingestion = st.number_input('Rate of Lead Ingestion [E]', min_value=0.0, format="%.4f")
-
-# Prediction button
-if st.button('Predict Trust Score'):
+if st.sidebar.button('Predict Trust Score'):
     input_data = np.array([[age, tcpa_match, ad_copy_match, distance_factor, rate_of_lead_ingestion]])
-    
-    # Make prediction
-    try:
-        prediction = model.predict(input_data)
-        trust_score = round(scaler.transform(prediction.reshape(-1, 1))[0][0], 2)
-        st.write('Predicted Trust Score:', trust_score)
-    except Exception as e:
-        st.write('Error:', str(e))
+    prediction = model.predict(input_data)
+    trust_score = round(scaler.transform(prediction.reshape(-1, 1))[0][0], 2)
+    st.write('Predicted Trust Score:', trust_score)
