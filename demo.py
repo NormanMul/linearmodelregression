@@ -30,7 +30,7 @@ def preprocess_data(data):
     y = scaler.fit_transform(y.values.reshape(-1, 1)).flatten()
     
     print("Data preprocessed successfully.")
-    return X, y
+    return X, y, scaler
 
 def train_model(X, y):
     print("Training model...")
@@ -40,18 +40,18 @@ def train_model(X, y):
     print("Model trained successfully.")
     return model
 
-def save_model(model, file_path):
-    print("Saving model...")
-    joblib.dump(model, file_path)
-    print("Model saved successfully.")
+def save_model(model, scaler, file_path):
+    print("Saving model and scaler...")
+    joblib.dump((model, scaler), file_path)
+    print("Model and scaler saved successfully.")
 
 if __name__ == "__main__":
     try:
-        data = load_data('/Users/naufalprawironegoro/Downloads/testmodel/dataframe.csv')  # Update with your CSV path
-        X, y = preprocess_data(data)
+        data = load_data('dataframe.csv')  # Ensure this file is in the root directory of the project
+        X, y, scaler = preprocess_data(data)
         print("Features used for training:", X.columns.tolist())  # Print the features used for training
         model = train_model(X, y)
-        save_model(model, '/Users/naufalprawironegoro/Downloads/testmodel/model.joblib')
+        save_model(model, scaler, 'model.joblib')
         print("All steps completed successfully.")
     except Exception as e:
         print(f"An error occurred: {str(e)}")
