@@ -5,13 +5,13 @@ from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import LabelEncoder, MinMaxScaler
 import numpy as np
 
-# Load the model
+# Load the model and scaler
 @st.cache_resource
 def load_model():
-    model = joblib.load('model.joblib')
-    return model
+    model, scaler = joblib.load('model.joblib')
+    return model, scaler
 
-model = load_model()
+model, scaler = load_model()
 
 # Streamlit app
 st.title('Trust Score Prediction App')
@@ -35,7 +35,7 @@ if st.button('Predict Trust Score'):
     # Make prediction
     try:
         prediction = model.predict(input_data)
-        trust_score = round(prediction[0], 2)
+        trust_score = round(scaler.transform(prediction.reshape(-1, 1))[0][0], 2)
         st.write('Predicted Trust Score:', trust_score)
     except Exception as e:
         st.write('Error:', str(e))
