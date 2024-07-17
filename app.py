@@ -8,8 +8,8 @@ import numpy as np
 # Load the model and scaler
 @st.cache_resource
 def load_model():
-    model, scaler = joblib.load('model.joblib')
-    return model, scaler
+    data = joblib.load('model.joblib')
+    return data['model'], data['scaler']
 
 model, scaler = load_model()
 
