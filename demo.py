@@ -47,11 +47,11 @@ def save_model(model, file_path):
 
 if __name__ == "__main__":
     try:
-        data = load_data('dataframe.csv')  # Ensure this file is in the root directory of the project
+        data = load_data('/Users/naufalprawironegoro/Downloads/testmodel/dataframe.csv')  # Update with your CSV path
         X, y = preprocess_data(data)
         print("Features used for training:", X.columns.tolist())  # Print the features used for training
         model = train_model(X, y)
-        save_model(model, 'model.joblib')
+        save_model(model, '/Users/naufalprawironegoro/Downloads/testmodel/model.joblib')
         print("All steps completed successfully.")
     except Exception as e:
         print(f"An error occurred: {str(e)}")
