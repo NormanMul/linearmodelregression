@@ -3,17 +3,15 @@ import numpy as np
 import joblib
 
 @st.cache(allow_output_mutation=True)
-def load_resources():
-    model = joblib.load('model.joblib')
-    scaler = joblib.load('scaler.joblib')
-    return model, scaler
+def load_model_scaler():
+    data = joblib.load('model_scaler.joblib')
+    return data['model'], data['scaler']
 
-model, scaler = load_resources()
+model, scaler = load_model_scaler()
 
 st.title('Trust Score Prediction App')
 st.markdown('### Made by Naufal Prawiro')
 
-# Centering the inputs in the main area
 col1, col2 = st.columns([1, 1])
 with col1:
     age = st.number_input('Age [A]', min_value=0.0, format="%.4f")
@@ -26,10 +24,11 @@ with col2:
 if st.button('Predict Trust Score'):
     input_data = np.array([[age, tcpa_match, ad_copy_match, distance_factor, rate_of_lead_ingestion]])
     prediction = model.predict(input_data)
-    trust_score = round(scaler.transform(prediction.reshape(-1, 1))[0][0], 2)
-    st.subheader(f"Predicted Trust Score: `{trust_score}`")
+    # Ensure that the prediction is transformed using the saved scaler
+    trust_score = scaler.transform(prediction.reshape(-1, 1))
+    trust_score = np.clip(trust_score, 1, 10)  # Ensure scores remain within 1-10
+    st.markdown(f"## Predicted Trust Score: `{round(trust_score[0][0], 2)}`")
 
-# Instructions or additional information can be added as needed
 st.markdown("### Instructions")
 st.markdown("""
 - Enter the required fields to predict the Trust Score.
