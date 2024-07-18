@@ -19,21 +19,22 @@ def preprocess_data(data):
     features = ['Age [A]', '% TCPA Match [B]', '% Ad Copy Match [C]', 'Distance Factor [D]', 'Rate of Lead Ingestion [E]']
     X = data[features]
     y = data['Trust Score (Normalized)']
-    scaler = MinMaxScaler(feature_range=(1, 10))
-    y = scaler.fit_transform(y.values.reshape(-1, 1)).flatten()
-    return X, y, scaler
+    return X, y
 
 def train_model(X, y):
+    scaler = MinMaxScaler(feature_range=(1, 10))
+    y_scaled = scaler.fit_transform(y.values.reshape(-1, 1)).flatten()
     model = LinearRegression()
-    model.fit(X, y)
-    return model
+    model.fit(X, y_scaled)
+    return model, scaler
 
-def save_model(model, scaler):
+def save_model_scaler(model, scaler):
     joblib.dump(model, 'model.joblib')
     joblib.dump(scaler, 'scaler.joblib')
+    print("Model and scaler saved successfully.")
 
 if __name__ == "__main__":
     data = load_data('dataframe.csv')
-    X, y, scaler = preprocess_data(data)
-    model = train_model(X, y)
-    save_model(model, scaler)
+    X, y = preprocess_data(data)
+    model, scaler = train_model(X, y)
+    save_model_scaler(model, scaler)
