@@ -22,15 +22,15 @@ def preprocess_data(data):
     return X, y
 
 def train_model(X, y):
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     scaler = MinMaxScaler(feature_range=(1, 10))
-    y_scaled = scaler.fit_transform(y.values.reshape(-1, 1)).flatten()
+    y_train_scaled = scaler.fit_transform(y_train.values.reshape(-1, 1))
     model = LinearRegression()
-    model.fit(X, y_scaled)
+    model.fit(X_train, y_train_scaled)
     return model, scaler
 
 def save_model_scaler(model, scaler):
-    joblib.dump(model, 'model.joblib')
-    joblib.dump(scaler, 'scaler.joblib')
+    joblib.dump({'model': model, 'scaler': scaler}, 'model_scaler.joblib')
     print("Model and scaler saved successfully.")
 
 if __name__ == "__main__":
